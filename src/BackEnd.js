@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 class Products {
 	constructor(title, description, price, thumbnail, stock){
 		this.title = title;
@@ -29,7 +31,7 @@ class ProductManager {
 		this.products = new Array();
 		this.#productDirPath = "files";
         this.#productFilePath = this.#productDirPath+"/Products.json";
-		this.#fileSystem = require("fs");
+		this.#fileSystem = fs;
 	}
 
     prepareDirProducts = async () => {
@@ -85,7 +87,7 @@ class ProductManager {
 
         } catch (error){
             console.error("Error al consultar los productos");
-            //throw Error(`Error al consultar los productos ${error}`);
+            //throw Error(`Error al consultar los productos, detalle del error ${error}`);
         }
 
     }
@@ -118,7 +120,7 @@ class ProductManager {
                 const index = this.products.indexOf(deletProd);
                 this.products.splice(index, 1);
                 console.log("se eliminó el producto")
-                console.log(this.products)
+                //console.log(this.products)
                 await this.#fileSystem.promises.writeFile(this.#productFilePath, JSON.stringify(this.products));
             }
         }catch{
@@ -154,12 +156,20 @@ console.log(productManager);
 console.log(productManager.getProducts());
 productManager.addProduct("Taza", "Taza de cerámica color negro", 1500, "Imagen no encontrada", 25);
 console.log(productManager.getProducts());
-productManager.addProduct("Termo", "Termo de acero inoxidable", 11500, "Imagen no encontrada", 30);
+productManager.addProduct("Termo", "Termo de acero inoxidable 1lt", 11500, "Imagen no encontrada", 30);
 console.log(productManager.getProducts());
 //productManager.getProductById(1);
 //productManager.deleteProduct(2);
 productManager.addProduct("Mate", "Mate de cerámica", 2000, "Imagen no encontrada", 20);
 console.log(productManager.getProducts());
 // productManager.updateProduct(1, {price: 2500});
+productManager.addProduct("Vaso", "Vaso de vidrio", 600, "Imagen no encontrada", 60);
+productManager.addProduct("Vaso térmico", "Vaso térmico de acero inoxidable", 3000, "Imagen no encontrada", 15);
+productManager.addProduct("Chopp", "Chopp de vidrio esmerilado", 1000, "Imagen no encontrada", 30);
+productManager.addProduct("Botella", "Botella de vidrio 500ml", 2500, "Imagen no encontrada", 20);
+productManager.addProduct("Kit matero", "Kit matero color negro", 5000, "Imagen no encontrada", 10);
+productManager.addProduct("Platos", "Set de platos de cerámica", 7000, "Imagen no encontrada", 80);
+productManager.addProduct("Jarra de vidrio", "Jarra de vidrio 1lt", 2000, "Imagen no encontrada", 20);
+console.log(productManager.getProducts());
 
-
+export {productManager};
