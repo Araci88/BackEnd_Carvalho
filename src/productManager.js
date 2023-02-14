@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-export class Products {
+class Products {
 	constructor(title, description, price, thumbnail, stock, category){
 		this.title = title;
 		this.description = description;
@@ -51,7 +51,7 @@ class ProductManager {
 		return this.products;
 	}
 
-	addProduct = async (title, description, price, thumbnail, stock, category, status, code) => {
+	addProduct = async (title, description, price, thumbnail, stock, category, status, code, id) => {
 		let newProduct = new Products (title, description, price, thumbnail, stock, category, status, code, id);
 		console.log(newProduct);
 
@@ -63,8 +63,8 @@ class ProductManager {
 				console.error("El código ya existe")
 			}else{
 				this.products.push(newProduct);
-				//console.log("Lista actualizada de productos: ");
-				//console.log(this.products)
+				console.log("Lista actualizada de productos: ");
+				console.log(this.products)
 				await this.#fileSystem.promises.writeFile(this.#productFilePath, JSON.stringify(this.products));
 			}	
 		}catch(error) {
@@ -79,13 +79,13 @@ class ProductManager {
 
             let productFile = await this.#fileSystem.promises.readFile(this.#productFilePath, "utf-8");
             
-            console.info("Archivo JSON obtenido desde archivo: ");
-            console.log(productFile);
+            //.info("Archivo JSON obtenido desde archivo: ");
+            //console.log(productFile);
 
             this.products = JSON.parse(productFile)
     
-            console.log("Productos encontrados: ");
-            console.log(this.products);
+            //console.log("Productos encontrados: ");
+            //console.log(this.products);
 
             return this.products;
 
@@ -161,7 +161,7 @@ console.log(productManager);
 console.log(productManager.getProducts());
 productManager.addProduct("Taza", "Taza de cerámica color negro", 1500, "Imagen no encontrada", 25, "Tazas");
 productManager.addProduct("Termo", "Termo de acero inoxidable 1lt", 11500, "Imagen no encontrada", 30, "Termos");
-productManager.addProduct("Mate", "Mate de cerámica", 2000, "Imagen no encontrada", 20, "Mates");
+productManager.addProduct("Mate", "Mate de cerámica", 2000, "Imagen no encontrada", 20, "Mate");
 productManager.addProduct("Vaso", "Vaso de vidrio", 600, "Imagen no encontrada", 60, "Vasos");
 productManager.addProduct("Vaso térmico", "Vaso térmico de acero inoxidable", 3000, "Imagen no encontrada", 15, "Vasos");
 productManager.addProduct("Chopp", "Chopp de vidrio esmerilado", 1000, "Imagen no encontrada", 30, "Vasos");
@@ -171,6 +171,7 @@ productManager.addProduct("Platos", "Set de platos de cerámica", 7000, "Imagen 
 productManager.addProduct("Jarra de vidrio", "Jarra de vidrio 1lt", 2000, "Imagen no encontrada", 20, "Vajilla");
 console.log(productManager.getProducts());
 */
+
 
 export default ProductManager;
 

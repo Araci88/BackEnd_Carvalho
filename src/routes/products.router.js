@@ -1,9 +1,8 @@
-import { request, Router } from "express";
+import { Router } from "express";
 import ProductManager from "../productManager.js";
-import { Products } from "../productManager.js";
 
 const productManager = new ProductManager();
-const newProduct = new Products();
+
 const router = Router();
 
 router.get("/", async (request, response) =>{
@@ -35,9 +34,8 @@ router.get('/:prodId', async (request, response) =>{
 
 router.post("/", async (request, response) =>{
     const newProd = request.body;
-    await productManager.addProduct(newProd.title, newProd.description, newProd.price, newProd.thumbnail, newProd.stock, newProd.category, newProd.status, newProd.code, newProd.id)
     try{
-        newProd.id = newProduct.getId();
+        await productManager.addProduct(newProd.title, newProd.description, newProd.price, newProd.thumbnail, newProd.stock, newProd.category, newProd.status, newProd.code, newProd.id)
         response.status(201).send({message: "Producto incorporado con éxito! Con id: "+ newProd.id});
     } catch(error){
         console.log("Error al guardar el producto. Error: " + error); 
