@@ -1,4 +1,7 @@
 import * as fs from 'fs';
+import ProductManager from './productManager.js';
+
+const productManager = new ProductManager();
 
 class Cart{
     constructor(){
@@ -34,7 +37,7 @@ class CartManager {
 	}
 
     createCart = async () =>{
-        let newCart = new Cart ();
+        let newCart = new Cart();
         console.log(newCart);
 
         try{
@@ -54,6 +57,10 @@ class CartManager {
 		}
     }
 
+    addToCart = async () =>{
+
+    }
+    
     consultCarts = async () =>{
         try{
             await this.prepareDirCarts();

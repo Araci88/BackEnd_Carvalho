@@ -34,6 +34,12 @@ router.post("/:cartId/product/:prodId", async (request, response) =>{
     const prodId = product.find(p => p.id === request.params.prodId);
     const prodInCart = cart.find(c => c.id === request.params.cartId);
 
+    if(prodId){
+        response.send(cart)
+    }else{
+        response.status(500).send({error: "500", message: "No se pudo agregar el producto"})
+    }
+
 })
 
 export default router;
