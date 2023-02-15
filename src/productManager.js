@@ -10,18 +10,7 @@ class Products {
         this.category = category;
         this.status = true;
 		this.code = Math.random().toString(30).substring(2);
-		this.id = Products.getId();
 	} 
-	
-    static getId = () => {
-        if(this.id) {
-            this.id++;
-        } else{
-            this.id = 1;
-        }
-        return this.id;
-    }
-
 };
 
 class ProductManager {
@@ -35,6 +24,7 @@ class ProductManager {
 		this.#productDirPath = "files";
         this.#productFilePath = this.#productDirPath+"/Products.json";
 		this.#fileSystem = fs;
+        this.id = 1;
 	}
 
     prepareDirProducts = async () => {
@@ -51,8 +41,9 @@ class ProductManager {
 		return this.products;
 	}
 
-	addProduct = async (title, description, price, thumbnail, stock, category, status, code, id) => {
-		let newProduct = new Products (title, description, price, thumbnail, stock, category, status, code, id);
+	addProduct = async (title, description, price, thumbnail, stock, category, status, code) => {
+		let newProduct = new Products (title, description, price, thumbnail, stock, category, status, code);
+
 		console.log(newProduct);
 
 		try{
@@ -61,12 +52,18 @@ class ProductManager {
 
 			if(this.products.some(prod => prod.code === newProduct.code)){
 				console.error("El código ya existe")
-			}else{
-				this.products.push(newProduct);
-				console.log("Lista actualizada de productos: ");
-				console.log(this.products)
-				await this.#fileSystem.promises.writeFile(this.#productFilePath, JSON.stringify(this.products));
-			}	
+			}
+
+            while (this.products.some(prod => prod.id === this.id)){
+                this.id++;
+            } 
+
+            newProduct.id = this.id;
+			this.products.push(newProduct);
+			console.log("Lista actualizada de productos: ");
+			console.log(this.products)
+			await this.#fileSystem.promises.writeFile(this.#productFilePath, JSON.stringify(this.products));
+		
 		}catch(error) {
 			console.error(`Error al agregar producto: ${JSON.stringify(newProduct)}, detalle del error: ${error}`);
 			throw Error(`Error al agregar producto: ${JSON.stringify(newProduct)}, detalle del error: ${error}`);
