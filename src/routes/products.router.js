@@ -37,6 +37,10 @@ router.post("/", async (request, response) =>{
 
     try{
         await productManager.addProduct(newProd.title, newProd.description, newProd.price, newProd.thumbnail, newProd.stock, newProd.category, newProd.status, newProd.code)
+        if(!newProd.title || !newProd.description || !newProd.price || !newProd.stock || !newProd.category){
+            response.status(400).send({status: "Error", message: "Los campos son requeridos"})
+        }
+        
         response.status(201).send({message: "Producto incorporado con éxito!"});
     } catch(error){
         console.log("Error al guardar el producto. Error: " + error); 
@@ -57,25 +61,31 @@ router.put("/:prodId", async (request, response) =>{
     updateProd.id = prod[prodPosition].id;
     prod[prodPosition] = updateProd;
 
-    console.log("Productos actuales: ");
-    console.log(prod)
-
-    return response.send({status: "Success", message: "Producto Actualizado.", data: prod[prodPosition]});
+    return response.status(200).send(productManager.writeJson(prod));
 })
 
 router.delete("/:prodId", async (request, response) =>{
     const prod = await productManager.consultProduct();
-    let prodId = parseInt(request.params.prodId);
-    const prodSize = prod.length;
-    const prodPosition = prod.findIndex((p => p.id === prodId))
-    if (prodPosition < 0){
+
+    const prodId = parseInt(request.params.prodId);
+
+    const findProduct = prod.find(p => p.id === prodId);
+
+    console.log(`id encontrado ${prodId}`)
+
+    if (!findProduct){
         return response.status(202).send({status: "info", error: "Producto no encontrado"});
     }
-    prod.splice(prodPosition, 1);
-    if(prod.length === prodSize){
+    
+    if(findProduct){
+        const index = prod.indexOf(findProduct)
+        prod.splice(index, 1);
+        //console.log(prod);
+        response.status(200).send(productManager.writeJson(prod))
+        //response.status(200).send({status: "success", message: "producto eliminado"})
+    }else{
         return response.status(500).send({status: "error", error: "El producto no se pudo eliminar"});
     }
-    return response.send({status: "Success", message: "Producto Eliminado"});
 })
 
 export default router;

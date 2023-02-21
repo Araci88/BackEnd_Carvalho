@@ -9,6 +9,7 @@ const productManager = new ProductManager();
 router.post("/", async (request, response) =>{
     const newCart = request.body;
     try{
+        //if(!newCart.products)
         await cartManager.createCart(newCart)
         response.status(201).send({message: "Cart creado con éxito!"});
     } catch(error){
@@ -19,7 +20,7 @@ router.post("/", async (request, response) =>{
 
 router.get("/:cartId", async (request, response) =>{
     const cart = await cartManager.getCart();
-    const cartId = cart.find(c => c.id == request.params.cartId);
+    const cartId = cart.find(c => c.idCart == request.params.cartId);
     if(cartId){
         response.send(JSON.stringify(cartId));
     }else{
@@ -28,18 +29,30 @@ router.get("/:cartId", async (request, response) =>{
 })
 
 router.post("/:cartId/product/:prodId", async (request, response) =>{
-    const product = await productManager.consultProduct();
+
+    const prodId = parseInt(request.params.prodId);
+    const cartId = parseInt(request.params.cartId);
+
+    const prod = await productManager.getProducts();
     const cart = await cartManager.consultCarts();
 
-    const prodId = product.find(p => p.id === request.params.prodId);
-    const prodInCart = cart.find(c => c.id === request.params.cartId);
+    const body = request.body;
 
-    if(prodId){
-        response.send(cart)
-    }else{
-        response.status(500).send({error: "500", message: "No se pudo agregar el producto"})
+    let quantity = parseInt(body["quantity"])
+
+    const productPosition = prod.findIndex(p => p.id == prodId)
+    const cartPosition = cart.findIndex(c => c.idCart == cartId)
+
+    if(cartPosition < 0){
+        return response.status(400).send({status: "info", message: "Cart no encontrado"})
     }
 
+    if(productPosition < 0){
+        return response.status(400).send({status: "info", message: "Product no encontrado"})
+    }
+
+    cartManager.builtCart(cartId, prodId, quantity, cartPosition)
+    return response.send({status: "Success", message: "Carrito Actualizado.", data: cart[cartPosition]});
 })
 
 export default router;

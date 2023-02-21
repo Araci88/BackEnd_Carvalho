@@ -85,6 +85,7 @@ class ProductManager {
             //console.log(this.products);
 
             return this.products;
+            
 
         } catch (error){
             console.error("Error al consultar los productos");
@@ -149,6 +150,10 @@ class ProductManager {
         await this.consultProduct();
         await this.#fileSystem.promises.unlink(this.#productFilePath);
         console.log("Archivo borrado con éxito");
+    }
+
+    writeJson = async () =>{
+        await this.#fileSystem.promises.writeFile(this.#productFilePath, JSON.stringify(this.products));
     }
 }
 

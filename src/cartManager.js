@@ -1,13 +1,5 @@
 import * as fs from 'fs';
-import ProductManager from './productManager.js';
 
-const productManager = new ProductManager();
-
-class Cart{
-    constructor(){
-        this.products = new Array();
-    }
-}
 class CartManager {
 
 	#cartDirPath;
@@ -19,7 +11,7 @@ class CartManager {
 		this.#cartDirPath = "files";
         this.#cartFilePath = this.#cartDirPath+"/Cart.json";
 		this.#fileSystem = fs;
-        this.id = 1;
+        this.idCart = 1;
 	}
 
     prepareDirCarts = async () => {
@@ -37,28 +29,26 @@ class CartManager {
 	}
 
     createCart = async () =>{
-        let newCart = new Cart();
+        let newCart = {
+            products : []
+        }
         console.log(newCart);
 
         try{
             await this.prepareDirCarts();
             await this.consultCarts();
 
-            while (this.cart.some(cart => cart.id === this.id)){
-                this.id++;
+            while (this.cart.some(cart => cart.idCart === this.idCart)){
+                this.idCart++;
             } 
 
-            newCart.id = this.id;
+            newCart.idCart = this.idCart;
             this.cart.push(newCart);
             await this.#fileSystem.promises.writeFile(this.#cartFilePath, JSON.stringify(this.cart));
         }catch(error) {
 			console.error(`Error al agregar cart: ${JSON.stringify(newCart)}, detalle del error: ${error}`);
 			throw Error(`Error al agregar cart: ${JSON.stringify(newCart)}, detalle del error: ${error}`);
 		}
-    }
-
-    addToCart = async () =>{
-
     }
     
     consultCarts = async () =>{
@@ -82,6 +72,41 @@ class CartManager {
             throw Error(`Error al consultar los carts, detalle del error ${error}`);
         }
 
+    }
+
+    getCartById = async (idCart) =>{
+        await this.consultCarts();
+        const cartId = this.cart.find(c => c.idCart == idCart);
+        if(cartId){
+            return cartId
+        }else{
+            console.error("El cart no existe")
+        }
+    }
+
+    builtCart = async (cartId, prodId, quantity, pos) =>{
+        await this.consultCarts()
+        
+        let cart = this.cart[pos]
+
+        const productPosition = cart.products.findIndex(p => p.prodId == prodId)
+
+        if(productPosition <0){
+            let newProduct = {
+                prodId: prodId,
+                quantity: 1
+            }
+            this.cart[pos].products.push(newProduct)
+        }else{
+            //const lastQuantity = parseInt(cart.products[productPosition].quantity)
+            this.cart[pos].products[productPosition].quantity = quantity++
+        }
+
+        await this.#fileSystem.promises.writeFile(this.#cartFilePath, JSON.stringify(this.cart));
+    }
+
+    writeCart = async () =>{
+        await this.#fileSystem.promises.writeFile(this.#cartFilePath, JSON.stringify(this.cart));
     }
 }
 
