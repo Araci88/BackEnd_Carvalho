@@ -1,13 +1,20 @@
 const socket = io();
 
+const formProducts = document.getElementById("formProducts")
 const submitForm = document.getElementById("submitForm");
 
-submitForm.addEventListener("submit", (e) =>{
+formProducts.addEventListener("submit", (e) =>{
     e.preventDefault();
     if(e.key==="Enter"){
-        socket.emit('messageFormProducts',submitForm.value);
-        submitForm.value=""
+        socket.emit('messageFormProducts',formProducts.value);
+        formProducts.value="";
     }
-    submitForm.reset();
+    formProducts.reset();
+})
+
+socket.on("formProducts", data =>{
+    console.log(data)
+    socketServer.emit(data)
+    formProducts.innerHTML = data;
 })
 

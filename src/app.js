@@ -33,6 +33,6 @@ socketServer.on("connection", socket => {
     
     socket.on("messageFormProducts", data =>{
         console.log(data)
-        socketServer.emit(data)
+        socketServer.emit("formProducts", data)
     })
 });
