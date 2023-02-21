@@ -13,4 +13,8 @@ router.get("/home", (request, response) => {
     response.render("home", {products})
 })
 
+router.get("/realtimeproducts", (request, response) =>{
+    response.render("realTimeProducts", {products})
+})
+
 export default router;

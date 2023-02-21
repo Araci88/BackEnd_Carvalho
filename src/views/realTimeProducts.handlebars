@@ -1,0 +1,35 @@
+<h1>Incorporación de Productos</h1>
+
+<form action="/realTimeProducts" id="formProducts">
+    <label for="">Nombre</label>
+    <input id="formTitle" type="text" name="title">
+    <label for="">Descripción</label>
+    <input id="formDescription" type="text" name="description">
+    <label for="">Precio</label>
+    <input id="formPrice" type="number" name="price">
+    <label for="">Stock</label>
+    <input id="formStock" type="number" name="stock">
+    <label for="">Imágen</label>
+    <input id="formImg" type="file" name="thumbnail">
+    <label for="">Categoría</label>
+    <input id="formCategory" type="text" name="category">
+    <input type="submit" id="submitForm">
+</form>
+
+<p id="log"/>
+
+<h1>Lista de Productos</h1>
+<div>
+    {{#each products}}
+    <p id="id">ID: {{this.id}}</p>
+    <p id="title">Nombre: {{this.title}}</p>
+    <p id="description">Descripción: {{this.description}}</p>
+    <p id="price">Precio: {{this.price}}</p>
+    <p id="stock">Stock: {{this.stock}}</p>
+    <p id="category">Categoría: {{this.category}}</p>
+    <p id="code">Code: {{this.code}}</p>
+    {{/each}}
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

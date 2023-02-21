@@ -31,7 +31,8 @@ const socketServer = new Server(httpServer);
 socketServer.on("connection", socket => {
     console.log("Nuevo cliente conectado");
     
-    socket.on("message", data =>{
+    socket.on("messageFormProducts", data =>{
         console.log(data)
+        socketServer.emit(data)
     })
 });

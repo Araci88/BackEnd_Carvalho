@@ -1,3 +1,13 @@
 const socket = io();
 
-socket.emit("message", "Hola, me estoy comunicando con un websocket!");
+const submitForm = document.getElementById("submitForm");
+
+submitForm.addEventListener("submit", (e) =>{
+    e.preventDefault();
+    if(e.key==="Enter"){
+        socket.emit('messageFormProducts',submitForm.value);
+        submitForm.value=""
+    }
+    submitForm.reset();
+})
+
