@@ -36,10 +36,6 @@ router.post("/:cartId/product/:prodId", async (request, response) =>{
     const prod = await productManager.getProducts();
     const cart = await cartManager.consultCarts();
 
-    const body = request.body;
-
-    let quantity = parseInt(body["quantity"])
-
     const productPosition = prod.findIndex(p => p.id == prodId)
     const cartPosition = cart.findIndex(c => c.idCart == cartId)
 
@@ -51,8 +47,8 @@ router.post("/:cartId/product/:prodId", async (request, response) =>{
         return response.status(400).send({status: "info", message: "Product no encontrado"})
     }
 
-    cartManager.builtCart(cartId, prodId, quantity, cartPosition)
-    return response.send({status: "Success", message: "Carrito Actualizado.", data: cart[cartPosition]});
+    await cartManager.builtCart()
+    return response.send({status: "Success", message: "Carrito Actualizado.", data: cart});
 })
 
 export default router;

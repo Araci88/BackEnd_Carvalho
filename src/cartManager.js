@@ -1,4 +1,7 @@
 import * as fs from 'fs';
+import ProductManager from './productManager.js';
+
+const productManager = new ProductManager();
 
 class CartManager {
 
@@ -84,22 +87,20 @@ class CartManager {
         }
     }
 
-    builtCart = async (cartId, prodId, quantity, pos) =>{
+    builtCart = async () =>{
         await this.consultCarts()
-        
-        let cart = this.cart[pos]
+        const prod = await productManager.consultProduct()
 
-        const productPosition = cart.products.findIndex(p => p.prodId == prodId)
+        let newProduct = {
+            "prodId": id,
+            "quantity": 1
+        }
 
-        if(productPosition <0){
-            let newProduct = {
-                prodId: prodId,
-                quantity: 1
-            }
-            this.cart[pos].products.push(newProduct)
+        const isInCart = this.cart.products.find(p => p.id == id);
+        if(isInCart){
+           isInCart.quantity++
         }else{
-            //const lastQuantity = parseInt(cart.products[productPosition].quantity)
-            this.cart[pos].products[productPosition].quantity = quantity++
+            this.cart.products.push(newProduct)
         }
 
         await this.#fileSystem.promises.writeFile(this.#cartFilePath, JSON.stringify(this.cart));

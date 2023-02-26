@@ -5,8 +5,10 @@ import viewsRouter from './routes/views.router.js';
 import __dirname from './util.js';
 import handlebars from 'express-handlebars';
 import {Server} from 'socket.io';
+import ProductManager from './productManager.js';
 
 const app = express();
+const productManager = new ProductManager();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -31,8 +33,8 @@ const socketServer = new Server(httpServer);
 socketServer.on("connection", socket => {
     console.log("Nuevo cliente conectado");
     
-    socket.on("messageFormProducts", data =>{
-        console.log(data)
-        socketServer.emit("formProducts", data)
-    })
+    socket.on('createProd', (data) => {
+        const createProd = productManager.addProduct(data)
+        socket.emit("formProduct", createProd);
+      });
 });
