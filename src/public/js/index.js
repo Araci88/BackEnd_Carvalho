@@ -4,22 +4,13 @@ const formProducts = document.getElementById("formProducts")
 const submitForm = document.getElementById("submitForm");
 const createProdButton = document.getElementById("createProd")
 
-
-socket.on("formProducts", data => {
-    document.getElementById("message").innerHTML = "Producto creado correctamente!"
-})
-
 createProdButton.onclick = () =>{
-    let data = addProduct();
+    let title = document.getElementById("formTitle").value||"";
+    let description = document.getElementById("formDescription").value||"";
+    let price = document.getElementById("formPrice").value||"";
+    let stock = document.getElementById("formStock").value||"";
+    let thumbnail = document.getElementById("formImg").value||"";
+    let category = document.getElementById("formCategory").value||"";
+    let data = {title: title, description: description, price: price, thumbnail: thumbnail, stock: stock, category: category}
     socket.emit("createProd", data)
-}
-
-const addProduct = () =>{
-    const title = document.getElementById("formTitle").value;
-    const description = document.getElementById("formDescription").value;
-    const price = document.getElementById("formPrice").value;
-    const stock = document.getElementById("formStock").value;
-    const img = document.getElementById("formImg").value;
-    const category = document.getElementById("formCategory").value;
-    return {title,description,price,stock,category,img}
 }

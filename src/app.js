@@ -32,9 +32,9 @@ const socketServer = new Server(httpServer);
 
 socketServer.on("connection", socket => {
     console.log("Nuevo cliente conectado");
-    
-    socket.on('createProd', (data) => {
-        const createProd = productManager.addProduct(data)
+
+    socket.on('createProd', ({title, description, price, thumbnail, stock, category}) => {
+        const createProd = productManager.addProduct(title, description, price, thumbnail, stock, category)
         socket.emit("formProduct", createProd);
       });
 });

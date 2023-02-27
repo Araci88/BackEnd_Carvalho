@@ -7,18 +7,29 @@
     <input id="formDescription" type="text" name="description" placeholder="Descripción">
     <label for="price">Precio</label>
     <input id="formPrice" type="number" name="price" placeholder="Precio">
-    <label for="stock">Stock</label>
-    <input id="formStock" type="number" name="stock" placeholder="Stock">
     <label for="thumbnail">Imágen</label>
     <input id="formImg" type="file" name="thumbnail">
+    <label for="stock">Stock</label>
+    <input id="formStock" type="number" name="stock" placeholder="Stock">
     <label for="category">Categoría</label>
     <input id="formCategory" type="text" name="category" placeholder="Categoría">
     <button id="createProd">Enviar</button>
 </form>
 
+<h2>Lista actualizada de productos</h2>
+
 <div>
-    <p id="message"></p>
+    {{#each products}}
+    <p id="id">ID: {{this.id}}</p>
+    <p id="title">Nombre: {{this.title}}</p>
+    <p id="description">Descripción: {{this.description}}</p>
+    <p id="price">Precio: {{this.price}}</p>
+    <p id="stock">Stock: {{this.stock}}</p>
+    <p id="category">Categoría: {{this.category}}</p>
+    <p id="code">Code: {{this.code}}</p>
+    {{/each}}
 </div>
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
