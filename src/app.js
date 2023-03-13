@@ -6,7 +6,8 @@ import __dirname from './util.js';
 import handlebars from 'express-handlebars';
 import {Server} from 'socket.io';
 import ProductManager from './Dao/FileSystem/productManager.js';
-import mongoose from 'mongoose';
+import mongoose, { connect } from 'mongoose';
+import { mongoDB_URI } from '../config.js';
 
 const app = express();
 const productManager = new ProductManager();
@@ -31,7 +32,7 @@ const httpServer = app.listen(SERVER_PORT, () =>{
 
 const connectMongoDB = async () =>{
     try {
-        await mongoose.connect('mongodb+srv://AraCarvalho:Zombie1988@coderbackend.cmh9uh7.mongodb.net/ecommerce?retryWrites=true&w=majority')
+        await mongoose.connect(mongoDB_URI)
         console.log("Conectado a MongoDB con Mongoose");
     } catch (error){
         console.error("No se pudo conectar a MongoDB");

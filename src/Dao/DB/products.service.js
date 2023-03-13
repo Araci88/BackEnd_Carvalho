@@ -17,12 +17,12 @@ export default class ProductService {
     }
 
     getById = async (_id) =>{
-        let getProdById = await productModel.findById(_id);
-        return getProdById;
+        let getProdById = await productModel.findById({_id});
+        return getProdById.toObject();
     }
 
     deleteOne = async () =>{
         let deleteOne = await productModel.deleteOne();
-        
+
     }
 };
