@@ -1,13 +1,17 @@
 import { Router } from "express";
-import ProductManager from "../productManager.js";
+import ProductManager from "../Dao/FileSystem/productManager.js";
+import ProductService from "../Dao/DB/products.service.js";
 
 const productManager = new ProductManager();
+const productService = new ProductService();
 
 const router = Router();
 
 router.get("/", async (request, response) =>{
     try{
-        const prod = await productManager.consultProduct();
+        //const prod = await productManager.consultProduct();
+        const prod = await productService.getAll();
+        response.send(prod)
         const limit = request.query.limit;
         if(!limit){
             return response.send(prod);
@@ -22,26 +26,20 @@ router.get("/", async (request, response) =>{
     }
 });
 
-router.get('/:prodId', async (request, response) =>{
-    const product = await productManager.getProducts();
-    const productId = product.find(p => p.id == request.params.prodId);
-    if(productId){
-        response.send(JSON.stringify(productId));
-    }else{
-        response.status(400).send({error: "400", message: "El id ingresado es inválido o no existe"});
+router.get("/:prodId", async (request, response) =>{
+    try{
+        const prodById = await productService.getById({_id: request.params.prodId});
+        response.send(prodById);
+        console.log(prodById);
+    } catch(error){
+        response.status(400).send({error: "400", message: "El id ingresado es inválido o no existe"})
     }
 });
 
 router.post("/", async (request, response) =>{
-    const newProd = request.body;
-
     try{
-        await productManager.addProduct(newProd.title, newProd.description, newProd.price, newProd.thumbnail, newProd.stock, newProd.category, newProd.status, newProd.code)
-        if(!newProd.title || !newProd.description || !newProd.price || !newProd.stock || !newProd.category){
-            response.status(400).send({status: "Error", message: "Los campos son requeridos"})
-        }
-        
-        response.status(201).send({message: "Producto incorporado con éxito!"});
+        let result = await productService.save(request.body);
+        response.status(201).send(result);
     } catch(error){
         console.log("Error al guardar el producto. Error: " + error); 
         response.status(500).send({error: "Error al guardar el producto", message: error});
@@ -49,6 +47,42 @@ router.post("/", async (request, response) =>{
 });
 
 router.put("/:prodId", async (request, response) =>{
+    try{
+        let {title, description, price, stock, status, thumbnail} = request.body;
+        let product = await productService.updateOne({_id: request.params.prodId}, {title, description, price, stock, status, thumbnail});
+        response.status(202).send(product);
+    }catch(error){
+        console.error("No se pudo actualizar el producto con moongose: " + error);
+        response.status(500).send({error: "No se pudo actualizar el producto con moongose", message: error});
+    }
+});
+
+/*router.get('/:prodId', async (request, response) =>{
+    const product = await productManager.getProducts();
+    const productId = product.find(p => p.id == request.params.prodId);
+    if(productId){
+        response.send(JSON.stringify(productId));
+    }else{
+        response.status(400).send({error: "400", message: "El id ingresado es inválido o no existe"});
+    }
+});*/
+
+/*router.post("/", async (request, response) =>{
+    const newProd = request.body;
+
+    try{
+        await productManager.addProduct(newProd.title, newProd.description, newProd.price, newProd.thumbnail, newProd.stock, newProd.category, newProd.status, newProd.code)
+        if(!newProd.title || !newProd.description || !newProd.price || !newProd.stock || !newProd.category){
+            response.status(400).send({status: "Error", message: "Los campos son requeridos"})
+        }
+        response.status(201).send({message: "Producto incorporado con éxito!"});
+    } catch(error){
+        console.log("Error al guardar el producto. Error: " + error); 
+        response.status(500).send({error: "Error al guardar el producto", message: error});
+    }
+});*/
+
+/*router.put("/:prodId", async (request, response) =>{
     const prod = await productManager.consultProduct();
 
     let prodId = parseInt(request.params.prodId);
@@ -62,7 +96,7 @@ router.put("/:prodId", async (request, response) =>{
     prod[prodPosition] = updateProd;
 
     return response.status(200).send(productManager.writeJson(prod));
-})
+})*/
 
 router.delete("/:prodId", async (request, response) =>{
     const prod = await productManager.consultProduct();
