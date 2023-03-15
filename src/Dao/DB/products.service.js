@@ -14,15 +14,15 @@ export default class ProductService {
     updateOne = async () =>{
         let updateProduct = await productModel.updateOne();
         return updateProduct;
-    }
+    };
 
     getById = async (_id) =>{
-        let getProdById = await productModel.findById({_id});
+        let getProdById = await productModel.findById(_id);
         return getProdById.toObject();
-    }
+    };
 
-    deleteOne = async () =>{
-        let deleteOne = await productModel.deleteOne();
-
-    }
+    deleteOne = async (_id) =>{
+        let deleteOne = await productModel.deleteOne(_id);
+        return deleteOne;
+    };
 };

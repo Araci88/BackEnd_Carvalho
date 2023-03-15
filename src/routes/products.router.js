@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ProductManager from "../Dao/FileSystem/productManager.js";
 import ProductService from "../Dao/DB/products.service.js";
+import { productModel } from "../Dao/DB/models/products.js";
 
 const productManager = new ProductManager();
 const productService = new ProductService();
@@ -9,18 +10,9 @@ const router = Router();
 
 router.get("/", async (request, response) =>{
     try{
-        //const prod = await productManager.consultProduct();
         const prod = await productService.getAll();
-        response.send(prod)
-        const limit = request.query.limit;
-        if(!limit){
-            return response.send(prod);
-        }
-        if(limit){
-            let prodQuery = prod.slice(0,parseInt(limit));
-            response.send({prod:prodQuery});
-        }
-        
+        response.send(prod);
+
     } catch(error){
         response.status(500).send({error: "Error al consultar los productos", message: error});
     }
@@ -32,8 +24,8 @@ router.get("/:prodId", async (request, response) =>{
         response.send(prodById);
         console.log(prodById);
     } catch(error){
-        response.status(400).send({error: "400", message: "El id ingresado es inválido o no existe"})
-    }
+        response.status(400).send({error: "Error al consultar por ID", message: error});
+    }     
 });
 
 router.post("/", async (request, response) =>{
@@ -48,14 +40,41 @@ router.post("/", async (request, response) =>{
 
 router.put("/:prodId", async (request, response) =>{
     try{
-        let {title, description, price, stock, status, thumbnail} = request.body;
-        let product = await productService.updateOne({_id: request.params.prodId}, {title, description, price, stock, status, thumbnail});
+        let {title, description, price, stock, category, status, thumbnail} = request.body;
+        let product = await productService.updateOne({_id: request.params.prodId}, {title, description, price, stock, category, status, thumbnail});
         response.status(202).send(product);
     }catch(error){
         console.error("No se pudo actualizar el producto con moongose: " + error);
         response.status(500).send({error: "No se pudo actualizar el producto con moongose", message: error});
     }
 });
+
+router.delete("/:prodId", async(request, response) =>{
+    try{
+        const deleteOne = await productService.deleteOne({_id: request.params.prodId})
+        return deleteOne;
+    } catch(error){
+        response.status(500).send({error: "Error al eliminar el producto", message: error});
+    }
+});
+
+/*router.get("/", async (request, response) =>{
+    try{
+        const prod = await productManager.consultProduct();
+        response.send(prod)
+        const limit = request.query.limit;
+        if(!limit){
+            return response.send(prod);
+        }
+        if(limit){
+            let prodQuery = prod.slice(0,parseInt(limit));
+            response.send({prod:prodQuery});
+        }
+        
+    } catch(error){
+        response.status(500).send({error: "Error al consultar los productos", message: error});
+    }
+});*/
 
 /*router.get('/:prodId', async (request, response) =>{
     const product = await productManager.getProducts();
@@ -98,7 +117,7 @@ router.put("/:prodId", async (request, response) =>{
     return response.status(200).send(productManager.writeJson(prod));
 })*/
 
-router.delete("/:prodId", async (request, response) =>{
+/*router.delete("/:prodId", async (request, response) =>{
     const prod = await productManager.consultProduct();
 
     const prodId = parseInt(request.params.prodId);
@@ -120,6 +139,6 @@ router.delete("/:prodId", async (request, response) =>{
     }else{
         return response.status(500).send({status: "error", error: "El producto no se pudo eliminar"});
     }
-})
+})*/
 
 export default router;

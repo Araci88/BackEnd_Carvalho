@@ -1,12 +1,33 @@
 import { Router } from "express";
 import CartManager from "../Dao/FileSystem/cartManager.js";
 import ProductManager from "../Dao/FileSystem/productManager.js";
+import CartService from "../Dao/DB/carts.service.js";
 
 const router = Router();
 const cartManager = new CartManager();
 const productManager = new ProductManager();
+const cartService = new CartService();
 
 router.post("/", async (request, response) =>{
+    try{
+        let result = await cartService.save(request.body);
+        response.status(201).send(result);
+    } catch(error){
+        console.log("Error al guardar el carrito. Error: " + error); 
+        response.status(500).send({error: "Error al guardar el carrito", message: error});
+    }
+});
+
+router.get("/:cartId", async (request, response) =>{
+    try{
+        const cartById = await cartService.getById({_id: request.params.cartId});
+        response.send(cartById);
+        console.log(cartById);
+    } catch(error){
+        response.status(400).send({error: "Error al consultar por ID", message: error});
+    }  
+})
+/*router.post("/", async (request, response) =>{
     const newCart = request.body;
     try{
         //if(!newCart.products)
@@ -16,9 +37,9 @@ router.post("/", async (request, response) =>{
         console.log("Error al guardar el cart. Error: " + error); 
         response.status(500).send({error: "Error al guardar el cart", message: error});
     }
-})
+})*/
 
-router.get("/:cartId", async (request, response) =>{
+/*router.get("/:cartId", async (request, response) =>{
     const cart = await cartManager.getCart();
     const cartId = cart.find(c => c.idCart == request.params.cartId);
     if(cartId){
@@ -49,6 +70,6 @@ router.post("/:cartId/product/:prodId", async (request, response) =>{
 
     await cartManager.builtCart()
     return response.send({status: "Success", message: "Carrito Actualizado.", data: cart});
-})
+})*/
 
 export default router;
