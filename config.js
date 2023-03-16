@@ -1,0 +1,1 @@
+export const mongoDB_URI = 'mongodb+srv://AraCarvalho:Zombie1988@coderbackend.cmh9uh7.mongodb.net/ecommerce?retryWrites=true&w=majority'
