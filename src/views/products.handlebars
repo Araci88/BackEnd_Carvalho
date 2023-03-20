@@ -1,0 +1,34 @@
+<h1 class="text-center">Lista de Productos</h1>
+
+{{#if isValid}}
+<div class= "card bg-ligth" style="width: 18rem;" >
+    {{#each docs}}
+    <img src="" class="card-img-top cardImg" alt="">
+    <div class= "card-body">
+        <h5 class="card-title text-center">{{this.title}}</h5>
+        <p class="card-text text-center">{{this.description}}</p>
+        <p class="card-text text-center">{{this.price}}</p>
+        <p class="card-text text-center">{{this.stock}}</p>
+        <p class="card-text text-center">{{this.category}}</p>
+        <button className="btn btn-primary"> Agregar al carrito </button>
+    </div>
+    {{/each}}
+</div>
+
+<div>
+    {{#if hasPrevPage}}
+        <a href={{this.prevLink}}><< Anterior</a>
+    {{/if}}
+    &nbsp;
+    {{this.page}}
+    &nbsp;
+     {{#if hasNextPage}}
+        <a href={{this.nextLink}}>Siguiente >></a>
+    {{/if}} 
+</div>
+
+
+{{/if}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

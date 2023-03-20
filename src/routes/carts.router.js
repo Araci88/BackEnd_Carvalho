@@ -2,11 +2,13 @@ import { Router } from "express";
 import CartManager from "../Dao/FileSystem/cartManager.js";
 import ProductManager from "../Dao/FileSystem/productManager.js";
 import CartService from "../Dao/DB/carts.service.js";
+import ProductService from "../Dao/DB/products.service.js";
 
 const router = Router();
 const cartManager = new CartManager();
 const productManager = new ProductManager();
 const cartService = new CartService();
+const productService = new ProductService();
 
 router.post("/", async (request, response) =>{
     try{
@@ -27,6 +29,21 @@ router.get("/:cartId", async (request, response) =>{
         response.status(400).send({error: "Error al consultar por ID", message: error});
     }  
 })
+
+router.post("/:cartId/product/:prodId", async (request, response) =>{
+    try{
+        const cartId = request.params.cartId;
+        const prodId = request.params.prodId;
+
+        let cartUpdate = await cartService.addProduct(cartId, prodId)
+        response.status(200).send(cartUpdate);
+
+    }catch(error){
+        console.log(error)
+        response.status(500).send({error: "Error al agregar al carrito", message: error})
+    }
+})
+
 /*router.post("/", async (request, response) =>{
     const newCart = request.body;
     try{

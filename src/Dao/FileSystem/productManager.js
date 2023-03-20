@@ -91,7 +91,6 @@ class ProductManager {
             console.error("Error al consultar los productos");
             throw Error(`Error al consultar los productos, detalle del error ${error}`);
         }
-
     }
 
 	getProductById = async (id) =>{

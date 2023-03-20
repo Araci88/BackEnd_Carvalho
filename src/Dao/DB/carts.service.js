@@ -1,4 +1,7 @@
 import { cartModel } from "./models/carts.js";
+import ProductService from "./products.service.js";
+
+const productService = new ProductService();
 
 export default class CartService{
 
@@ -17,4 +20,15 @@ export default class CartService{
         return getCartById.toObject();
     };
 
+    addProduct = async (cartId, prodId) =>{
+
+        let product = await productService.getById(prodId)
+        let cart = await cartModel.findById(cartId);
+
+        if(cart){
+            cart.products.push({product, quantity: 1})
+            const result = await cart.save();
+            return result;
+        }
+    }
 };

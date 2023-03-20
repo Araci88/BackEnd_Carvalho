@@ -12,5 +12,8 @@ createProdButton.onclick = () =>{
     let thumbnail = document.getElementById("formImg").value||"";
     let category = document.getElementById("formCategory").value||"";
     let data = {title: title, description: description, price: price, thumbnail: thumbnail, stock: stock, category: category}
-    socket.emit("createProd", data)
+    
+    setInterval(() =>{
+        socket.emit("createProd", data)
+    }, 3000); 
 }

@@ -3,6 +3,7 @@ import { productModel } from "./models/products.js";
 export default class ProductService {
     getAll = async () => {
         let products = await productModel.find();
+
         return products.map(product => product.toObject());
     };
 
