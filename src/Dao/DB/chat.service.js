@@ -7,8 +7,8 @@ export default class MessageService {
         return messages;
     }
 
-    saveMessages = async (data) =>{
-        let result = await messagesModel.create(data);
+    saveMessages = async (newMessage) =>{
+        let result = await messagesModel.create(newMessage);
         return result;
     }
 }

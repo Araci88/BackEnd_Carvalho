@@ -12,8 +12,9 @@ export default class ProductService {
         return result;
     };
 
-    updateOne = async () =>{
-        let updateProduct = await productModel.updateOne();
+    updateOne = async (prodId, product) =>{
+
+        let updateProduct = await productModel.updateOne({_id: prodId}, product);
         return updateProduct;
     };
 

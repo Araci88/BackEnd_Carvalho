@@ -9,6 +9,7 @@ import ProductManager from './Dao/FileSystem/productManager.js';
 import mongoose, { connect } from 'mongoose';
 import { mongoDB_URI } from '../config.js';
 import MessageService from './Dao/DB/chat.service.js';
+import { messagesModel } from './Dao/DB/models/messages.js';
 
 
 const app = express();
@@ -55,21 +56,24 @@ socketServer.on("connection", socket => {
         socket.emit("formProduct", createProd);
     });
 
-    let getMessages = async () =>{
-        let message = await messageService.getMessages();
-        socketServer.emit("getChat", message)
+    let messages = [];
+
+    let uploadMessages = async (newMessage) =>{
+        let uploadMessage = await messageService.saveMessages(newMessage);
+        return {
+            success: true,
+            message: `Message added`
+        };
     }
 
-    let saveMessages = async (data) =>{
-        await messageService.saveMessages(data);
-        getMessages();
-    }
-
-    socket.on("getChat", () =>{
-        getMessages();
+    socket.on("message", data =>{
+        messages.push(data),
+        socketServer.emit("messageLogs", messages)
+        uploadMessages(messages);
     });
 
-    socket.on("saveMessages", data =>{
-        saveMessages(data);
-    })
+    socket.on("userConnected", data => {
+        console.log("User connected: " + data.user);
+        socket.broadcast.emit("userConnected", data.user);
+    });
 });

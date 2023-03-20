@@ -35,14 +35,41 @@ router.post("/:cartId/product/:prodId", async (request, response) =>{
         const cartId = request.params.cartId;
         const prodId = request.params.prodId;
 
-        let cartUpdate = await cartService.addProduct(cartId, prodId)
+        let cartUpdate = await cartService.addProduct(cartId, prodId);
+        console.log(cartUpdate)
         response.status(200).send(cartUpdate);
 
     }catch(error){
         console.log(error)
         response.status(500).send({error: "Error al agregar al carrito", message: error})
     }
-})
+});
+
+router.delete("/:cartId/product/:prodId", async (request, response) =>{
+    try{
+        const cartId = request.params.cartId;
+        const prodId = request.params.prodId;
+
+        let deleteProd = await cartService.deleteProduct({_id: cartId}, {$pull: {products: {product: prodId}}}, {new: true})
+        response.status(200).send(deleteProd);
+    }catch(error){
+        console.log(error);
+        response.status(500).send({error: "No se pudo eliminar el producto", message: error})
+    }
+});
+
+router.delete("/:cartId", async (request, response) =>{
+    try{
+        const cartId = request.params.cartId;
+
+        const deleteAllProducts = await cartService.deleteAllProducts({_id: cartId}, {products: {product: []}})
+        response.status(200).send(deleteAllProducts);
+    }catch(error){
+        console.log(error);
+        response.status(500).send({error: "Error al eliminar los productos", message: error});
+    }
+});
+
 
 /*router.post("/", async (request, response) =>{
     const newCart = request.body;
