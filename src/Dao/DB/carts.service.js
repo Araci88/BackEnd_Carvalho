@@ -32,12 +32,16 @@ export default class CartService{
     };
 
     deleteProduct = async (cartId, prodId) => {
-        let result = await cartModel.findByIdAndUpdate(cartId, prodId)
-        return result;
+        let cart = await cartModel.findById(cartId)
+
+        if(cart){
+            let result = await cartModel.deleteOne({products: {product: prodId}})
+            return result;
+        }
     };
 
     deleteAllProducts = async (cartId) => {
-        let deleteAllProd = await cartModel.updateOne({_id: cartId}, {products: {products: []}});
+        let deleteAllProd = await cartModel.updateOne(cartId);
         return deleteAllProd;
     };
 };

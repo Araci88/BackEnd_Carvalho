@@ -3,6 +3,7 @@ import CartManager from "../Dao/FileSystem/cartManager.js";
 import ProductManager from "../Dao/FileSystem/productManager.js";
 import CartService from "../Dao/DB/carts.service.js";
 import ProductService from "../Dao/DB/products.service.js";
+import { cartModel } from "../Dao/DB/models/carts.js";
 
 const router = Router();
 const cartManager = new CartManager();
@@ -47,11 +48,11 @@ router.post("/:cartId/product/:prodId", async (request, response) =>{
 
 router.delete("/:cartId/product/:prodId", async (request, response) =>{
     try{
-        const cartId = request.params.cartId;
-        const prodId = request.params.prodId;
+        let cartId = request.params.cartId;
+        let prodId = request.params.prodId;
 
-        let deleteProd = await cartService.deleteProduct({_id: cartId}, {$pull: {products: {product: prodId}}}, {new: true})
-        response.status(200).send(deleteProd);
+        let deleteProd = await cartModel.deleteProduct({_id: cartId}, {products: {product: prodId}})
+        response.status(200).send({deleteProd});
     }catch(error){
         console.log(error);
         response.status(500).send({error: "No se pudo eliminar el producto", message: error})
@@ -62,7 +63,7 @@ router.delete("/:cartId", async (request, response) =>{
     try{
         const cartId = request.params.cartId;
 
-        const deleteAllProducts = await cartService.deleteAllProducts({_id: cartId}, {products: {product: []}})
+        const deleteAllProducts = await cartService.deleteAllProducts({_id: cartId}, {products: []})
         response.status(200).send(deleteAllProducts);
     }catch(error){
         console.log(error);

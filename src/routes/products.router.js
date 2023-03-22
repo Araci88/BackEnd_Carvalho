@@ -12,11 +12,11 @@ const router = Router();
 router.get("/", async (request, response) =>{
     try{
         //let prod = await productService.getAll();
-
-        let {limit, page, sort} = request.query;
+        
+        let {category, limit, page, sort} = request.query;
         let resultProducts = {};
 
-        let prod = await productModel.paginate({}, {limit: (limit ? limit: 10), page: (page ? page: 1)})
+        let prod = await productModel.paginate({}, {limit: (limit ? limit: 10), page: (page ? page: 1), sort: (sort ? sort: {price:1})})
 
         resultProducts = {
             status: "succcess",
@@ -27,11 +27,11 @@ router.get("/", async (request, response) =>{
             page: prod.page,
             hasPrevPage: prod.hasPrevPage,
             hasNextPage: prod.hasNextPage,
-            prevLink: prod.hasPrevPage != false  ? `http://localhost:8080/api/products?limit=${(limit ? limit : 10)}&page=${parseInt((page ? page : 1))-1}` : null ,
-            nextLink: prod.hasNextPage != false  ? `http://localhost:8080/api/products?limit=${(limit ? limit : 10)}&page=${parseInt((page ? page : 1))+1}` : null ,
+            prevLink: prod.hasPrevPage != false  ? `http://localhost:8080/api/products?limit=${(limit ? limit : 10)}&page=${parseInt((page ? page : 1))-1}&sort=${(sort ? sort: {price:1})}` : null ,
+            nextLink: prod.hasNextPage != false  ? `http://localhost:8080/api/products?limit=${(limit ? limit : 10)}&page=${parseInt((page ? page : 1))+1}&sort=${(sort ? sort: {price:1})}` : null ,
         }
         response.send(resultProducts);
-
+        //response.send(prod);
     } catch(error){
         console.log(error)
         response.status(500).send({error: "Error al consultar los productos", message: error});

@@ -1,0 +1,11 @@
+<h1>Carrito</h1>
+
+<div>
+    {{#each viewCart}}
+    <ul>
+        <li>{{this.products.product}}</li>
+    </ul>
+    {{/each}}
+</div>
+
+<script src="/socket.io/socket.io.js"></script>

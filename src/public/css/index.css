@@ -1,0 +1,13 @@
+.cardProd{
+    margin: 4px;
+    align-items: center;
+    justify-content: space-around;
+    row-gap: 10px;
+}
+.card-body{
+    text-align: center;
+    color: #253746;
+}
+.btnAddCart{
+    align-self: center;
+}

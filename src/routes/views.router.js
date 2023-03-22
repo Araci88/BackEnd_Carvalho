@@ -2,6 +2,7 @@ import express from "express";
 import ProductManager from "../Dao/FileSystem/productManager.js";
 import ProductService from "../Dao/DB/products.service.js";
 import { productModel } from "../Dao/DB/models/products.js";
+import { cartModel } from "../Dao/DB/models/carts.js";
 
 const router = express.Router();
 const productManager = new ProductManager();
@@ -36,6 +37,14 @@ router.get("/products", async (request, response) =>{
         console.log(error)
         response.status(500).send({error: "Error al consultar los productos", message: error});
     }
+})
+
+router.get("/cartId", async (request, response) =>{
+    let cartId = request.params.cartId;
+
+    let viewCart = cartModel.findById();
+
+    response.render("cartId", viewCart);
 })
 
 router.get("/realtimeproducts", (request, response) =>{
