@@ -39,12 +39,12 @@ router.get("/products", async (request, response) =>{
     }
 })
 
-router.get("/cartId", async (request, response) =>{
+router.get("/cart/:cartId", async (request, response) =>{
     let cartId = request.params.cartId;
 
-    let viewCart = cartModel.findById();
+    let viewCart = cartModel.findById(cartId);
 
-    response.render("cartId", viewCart);
+    response.render("cart/:cartId", viewCart);
 })
 
 router.get("/realtimeproducts", (request, response) =>{

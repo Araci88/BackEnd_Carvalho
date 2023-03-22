@@ -3,7 +3,7 @@
 {{#if isValid}}
 <div class="container cardProd">
     <div class="row">
-        <div class= "card bg-ligth" style="width: 18rem;" >
+        <div class= "card bg-ligth col-md-4" style="width: 18rem;" >
             {{#each docs}}
             <img src="" class="card-img-top cardImg" alt="">
             <div class= "card-body">
@@ -12,7 +12,7 @@
                 <p class="card-text text-center">Precio: {{this.price}}</p>
                 <p class="card-text text-center">Stock: {{this.stock}}</p>
                 <p class="card-text text-center">{{this.category}}</p>
-                <button class="btn btn-primary btnAddCart"> Agregar al carrito </button>
+                <button class="btn btn-primary btnAddCart align-self-center"> Agregar al carrito </button>
             </div>
             {{/each}}
         </div>

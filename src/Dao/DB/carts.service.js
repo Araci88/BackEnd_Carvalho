@@ -33,15 +33,49 @@ export default class CartService{
 
     deleteProduct = async (cartId, prodId) => {
         let cart = await cartModel.findById(cartId)
+        let index = cart.products.findIndex(p => p.prodId == p.prodId);
 
-        if(cart){
-            let result = await cartModel.deleteOne({products: {product: prodId}})
-            return result;
-        }
+        cart.products.splice(index,1);
+
+        const result = await cart.save();
+        return result;
     };
 
     deleteAllProducts = async (cartId) => {
-        let deleteAllProd = await cartModel.updateOne(cartId);
-        return deleteAllProd;
+        let emptyCart = await cartModel.findById(cartId);
+        
+        emptyCart.products = [];
+
+        await cartModel.updateOne({cartId}, emptyCart);
+        
+        const result = await emptyCart.save();
+        return result;
+        //return await cartModel.updateOne(cartId, emptyCart);
     };
+
+    updateCart = async (cartId, products) => {
+        const cart = await cartModel.findById(cartId);
+        
+        const updateProd = products.map(p => ({
+            prodId: p.prodId,
+            quantity: p.quantity || 1
+        }));
+
+        cart.products = updateProd;
+        
+        const result = await cart.save();
+        return result;
+    };
+
+    updateQuantity = async (cartId, prodId, quantity) =>{
+        const cart = await cartModel.findById(cartId);
+
+        const isInCart = cart.products.find(p => p.prodId == p.prodId);
+
+        isInCart.quantity = quantity;
+
+        const result = await cart.save();
+
+        return result;
+    }
 };

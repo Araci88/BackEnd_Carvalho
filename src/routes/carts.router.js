@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { response, Router } from "express";
 import CartManager from "../Dao/FileSystem/cartManager.js";
 import ProductManager from "../Dao/FileSystem/productManager.js";
 import CartService from "../Dao/DB/carts.service.js";
@@ -51,8 +51,8 @@ router.delete("/:cartId/product/:prodId", async (request, response) =>{
         let cartId = request.params.cartId;
         let prodId = request.params.prodId;
 
-        let deleteProd = await cartModel.deleteProduct({_id: cartId}, {products: {product: prodId}})
-        response.status(200).send({deleteProd});
+        let deleteProd = await cartService.deleteProduct(cartId, prodId)
+        response.status(200).send(deleteProd);
     }catch(error){
         console.log(error);
         response.status(500).send({error: "No se pudo eliminar el producto", message: error})
@@ -63,7 +63,7 @@ router.delete("/:cartId", async (request, response) =>{
     try{
         const cartId = request.params.cartId;
 
-        const deleteAllProducts = await cartService.deleteAllProducts({_id: cartId}, {products: []})
+        const deleteAllProducts = await cartService.deleteAllProducts(cartId)
         response.status(200).send(deleteAllProducts);
     }catch(error){
         console.log(error);
@@ -71,6 +71,33 @@ router.delete("/:cartId", async (request, response) =>{
     }
 });
 
+router.put("/:cartId", async (request, response) =>{
+    try{
+        const cartId = request.params.cartId;
+        let newProd = request.body;
+
+        let updateCart = await cartService.updateCart(cartId, newProd)
+
+        response.status(200).send(updateCart)
+    }catch(error){
+        consolr.log(error);
+        response.status(500).send({error: "Error al actualizar el carrito", message: error});
+    }
+});
+
+router.put("/:cartId/product/:prodId", async (request, response) =>{
+    try{
+        const cartId = request.params.cartId;
+        const prodId = request.params.prodId;
+        const quantity = request.body.quantity;
+
+        let updateQuantity = await cartService.updateQuantity(cartId, prodId, quantity);
+        response.status(200).send(updateQuantity);
+    }catch(error){
+        console.log(error);
+        response.status(500).send({error: "No se pudo actualizar la cantidad de los productos", message: error})
+    } 
+});
 
 /*router.post("/", async (request, response) =>{
     const newCart = request.body;
