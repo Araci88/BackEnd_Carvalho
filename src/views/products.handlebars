@@ -1,3 +1,24 @@
+<ul>
+    {{#if user}}
+    <div>
+        <h1>Bienvenido!</h1>
+        <p>{{user.name}}</p>
+        <p>{{user.email}}</p>
+        <p>{{user.age}}</p>
+    </div>
+    {{#if admin}}
+        <span >ADMIN</span>
+    {{/if}}
+        <form method="POST" action="/api/sessions/logout">
+            <button class="btn btn-primary btn-sm nav-link" type="submit">Logout</button>
+        </form>
+    {{else}}
+    <button>
+        <a class="btn btn-primary btn-sm nav-link" href="/users/login">Login</a>
+    </button>
+    {{/if}}
+</ul>
+
 <h1 class="text-center">Lista de Productos</h1>
 
 {{#if isValid}}

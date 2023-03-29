@@ -1,16 +1,19 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
+import usersViewRouter from './routes/users.views.router.js';
+import sessionsRouter from './routes/sessions.router.js';
 import __dirname from './util.js';
 import handlebars from 'express-handlebars';
 import {Server} from 'socket.io';
 import ProductManager from './Dao/FileSystem/productManager.js';
-import mongoose, { connect } from 'mongoose';
+import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 import { mongoDB_URI } from '../config.js';
 import MessageService from './Dao/DB/chat.service.js';
-import { messagesModel } from './Dao/DB/models/messages.js';
-
 
 const app = express();
 const productManager = new ProductManager();
@@ -26,7 +29,21 @@ app.set('view engine', 'handlebars')
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartsRouter);
 app.use("/", viewsRouter);
+app.use("/users", usersViewRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use(express.static(__dirname+'/public'));
+app.use(cookieParser());
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: mongoDB_URI,
+        mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
+        ttl: 30
+    }),
+    secret: "r3m3sS3cr3t",
+    resave: false,
+    saveUninitialized: true
+}))
 
 const SERVER_PORT = 8080;
 
