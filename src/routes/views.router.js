@@ -4,6 +4,7 @@ import ProductManager from "../Dao/FileSystem/productManager.js";
 import ProductService from "../Dao/DB/products.service.js";
 import { productModel } from "../Dao/DB/models/products.js";
 import { cartModel } from "../Dao/DB/models/carts.js";
+import { userModel } from "../Dao/DB/models/users.js";
 
 const router = express.Router();
 const productManager = new ProductManager();
@@ -12,8 +13,6 @@ const products = await productManager.getProducts();
 const productService = new ProductService();
 
 router.use(cookieParser());
-
-
 
 router.get("/", (request, response) =>{
     response.render("index")
@@ -34,14 +33,16 @@ router.get("/products", async (request, response) =>{
         if(!page) page = 1;
         let products = await productModel.paginate({}, {page, limit:10, lean: true})
 
-        let user, admin = true;
+        //let user, admin = await userModel.findOne();
+        let user = request.session.user;
+        let admin = request.session.admin;
         
-        if (request.session.user){
+        /*if (request.session.user){
             user = request.session.user;
         }
         if (request.session.admin){
             admin = request.session.admin;
-        }
+        }*/
 
         response.render("products", {
                 products: products.docs, 

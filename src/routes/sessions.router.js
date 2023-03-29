@@ -3,20 +3,7 @@ import { userModel } from '../Dao/DB/models/users.js';
 
 const router = Router();
 
-export const publicRoute = (req, res, next) => {
-    if (req.session.user){
-        return res.redirect('/products');
-    }
-    next();
-};
-export const privateRoute = (req, res, next) => {
-    if (!req.session.user){
-        return res.redirect('/users/login');
-    }
-    next();
-};
-
-router.post("/register", publicRoute, async (req, res)=>{
+router.post("/register", async (req, res)=>{
     const { first_name, last_name, email, age, password} = req.body;
     console.log("Registrando usuario:");
     console.log(req.body);
@@ -40,10 +27,15 @@ router.post("/register", publicRoute, async (req, res)=>{
     }
 
     const result = await userModel.create(user);
-    res.status(201).send({status: "success", message: "Usuario creado con extito con ID: " + result.id, redirectUrl: '/users/login'});
+    res.status(201).json({
+        status: "success",
+        message: `User created successfully, ID: ${result.id}`,
+        redirectUrl: '/users/login'
+    });
+    //res.status(201).send({status: "success", message: "Usuario creado con extito con ID: " + result.id, redirectUrl: '/users/login'});
 });
 
-router.post("/login", publicRoute, async (req, res)=>{
+router.post("/login", async (req, res)=>{
     const {email, password} = req.body;
     const user = await userModel.findOne({email,password}); 
 
@@ -59,7 +51,8 @@ router.post("/login", publicRoute, async (req, res)=>{
         req.session.admin = true;
     }
 
-    res.redirect('/products');;
+    return res.redirect("/products")
+    //res.send({status:"success", payload:req.session.user, message:"¡Primer logueo realizado! :)" }).redirect('/products');;
 });
 
 router.post('/logout', (req, res) => {
